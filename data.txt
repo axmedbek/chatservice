@@ -1,0 +1,9 @@
+[ 
+    {
+      "Name" : "Mahesh Parashar",
+      "RollNo" : 101,
+      "Percentage" : "80%"
+    }
+]
+
+<h6><?php echo $_SESSION['login'] ?></h6>
