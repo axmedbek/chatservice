@@ -1,6 +1,8 @@
 <?php
 require('connect.php');
 
+include 'class.phpmailer.php';
+
 
 
 
@@ -20,9 +22,14 @@ if (isset($_POST['register']) && isset($_POST['username']) && is_string($_POST['
 					$type = $_FILES['image']['type'];
 					$size = $_FILES['image']['size'];
 					$random = rand(100000,500000);
-					$image_path = strlen($upload_dir."/".$random.$name,3);
+					$image_path =$upload_dir."/".$random.$name;
 			
+					
 				// Check for errors
+					if(!$user->isValidEmail($email)){
+						header("Location:../login.php?msg=email-error");
+						exit;
+					}
 					if($error > 0){
 						header("Location:../login.php?msg=upload-error");
 						exit;
@@ -63,8 +70,34 @@ if (isset($_POST['register']) && isset($_POST['username']) && is_string($_POST['
 			
 						//echo "Error uploading file - check destination is writeable.";
 					}
+					$image_path = substr($upload_dir,3)."/".$random.$name;
 					if (!empty($username) && !empty($password) && !empty($email)) {
-						$result = $user->register($username,$email,$password,$image_path);
+						
+						$activation = md5(rand(1000,5000));
+						$result = $user->register($username,$email,$password,$image_path,$activation);
+
+						$mail = new PHPMailer();
+						$mail->IsSMTP();
+						$mail->SMTPAuth = true;
+						$mail->Host = 'smtp.alfakitab.com';
+						$mail->Port = 587;
+						$mail->Username = 'elaqe@alfakitab.com';
+						$mail->Password = '6627398ehmed';
+						$mail->SetFrom($mail->Username, 'ChatBox Admistration');
+						$mail->AddAddress($email, 'Alıcının Adı');
+						$mail->CharSet = 'UTF-8';
+						$mail->Subject = 'Validation Account Mail';
+						$content = '<a href="http://localhost/AhmadMammadli/db/validation.php?email='.$email.'&activation='.$activation.'">Do Active</a>';
+						$mail->MsgHTML($content);
+						if($mail->Send()) {
+							echo 'Mail gönderildi!';
+						} else {
+							echo 'Mail gönderilirken bir hata oluştu: ' . $mail->ErrorInfo;
+						}
+						
+
+
+
 						if ($result) {
 							header('Location:../login.php?msg=Registersuccess');
 							exit;

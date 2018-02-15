@@ -24,13 +24,21 @@ if(isset($_GET['msg'])){
 				$color = "danger";
 				break; 
 		case "Registersuccess":
-				$message = "Registration is Successfully";
+				$message = "Registration is Successfully.Please Control your Email Address";
 				$color = "success";
 				break;
 		case "RegisterError":
 				$message = "Registration is inValid";
 				$color = "danger";
 				break;
+		case "email-error" : 
+				$message = "Email isn't valid";
+				$color = "danger";
+				break;
+		case "upload-error" : 
+				$message = "Image wasn't uploaded";
+				$color = "danger";
+				break;		
 		default :
 				$message = "";
 				$color = "";
